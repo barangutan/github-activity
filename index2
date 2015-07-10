@@ -9,9 +9,11 @@ function GitHubFeed(username, config) {
     EventEmitter.call(this);
     this.username = username;
     this.config = config;
-    this.caller = null;
+    this.caller = {};
 }
 util.inherits(GitHubFeed, EventEmitter);
+
+var req = null;
 
 GitHubFeed.prototype.fetch = function(callback) {
     var output = [];
@@ -79,29 +81,7 @@ GitHubFeed.prototype.stream = function() {
     var opts = this.config || {};
     var feedparser = new FeedParser();
     
-    this.caller = {func: 'stream', parser: feedparser};
-    var req = request('https://github.com/' + this.username + ".atom");
-    
-    req.on('error', function (error) {
-        self.emit('error', new Error(error));
-    });
-    
-    req.on('response', function (response) {
-        var stream = this;
-
-        if (response.statusCode === 404) 
-        {
-            var err = new Error('Unable to find feed for \'' + this.username + '\'');
-            return self.emit('error', new Error(err));
-        } 
-        else 
-        if (response.statusCode !== 200) {
-            var err = new Error('Bad status code');
-            return self.emit('error', new Error(err));
-        }
-
-        stream.pipe(feedparser);
-    });
+    this._request(feedparser);
     
     feedparser.on('error', function(error) {
         self.emit('error', new Error(error));
@@ -132,6 +112,31 @@ GitHubFeed.prototype.stream = function() {
     
     feedparser.on('end', function() {
         self.emit('end');
+    });
+}
+
+GitHubFeed.prototype._request = function(feedparser) {
+    var req = request('https://github.com/' + this.username + ".atom");
+    
+    req.on('error', function (error) {
+        self.emit('error', new Error(error));
+    });
+    
+    req.on('response', function (response) {
+        var stream = this;
+
+        if (response.statusCode === 404) 
+        {
+            var err = new Error('Unable to find feed for \'' + this.username + '\'');
+            return self.emit('error', new Error(err));
+        } 
+        else 
+        if (response.statusCode !== 200) {
+            var err = new Error('Bad status code');
+            return self.emit('error', new Error(err));
+        }
+
+        stream.pipe(feedparser);
     });
 }
 
