@@ -9,43 +9,28 @@ function GitHubFeed(username, config) {
     EventEmitter.call(this);
     this.username = username;
     this.config = config;
-    this.caller = null;
 }
 util.inherits(GitHubFeed, EventEmitter);
 
 GitHubFeed.prototype.fetch = function(callback) {
     var output = [];
     
-    var opts = this.config || {};
-    var feedparser = new FeedParser();
-    var req = request('https://github.com/' + this.username + ".atom");
+    var opts = objectAssign(
+    {
+        username: this.username,
+        parser: new FeedParser(),
+        callback: callback,
+        isAsyc: true
+    }, this.options || {});
+    var req = request('https://github.com/' + opts.username + ".atom");
     
-    req.on('error', function (error) {
+    this._req(req, opts);
+    
+    opts.parser.on('error', function(error) {
         callback(new Error(error), null);
     });
     
-    req.on('response', function (response) {
-        var stream = this;
-
-        if (response.statusCode === 404) 
-        {
-            var error = new Error('Unable to find feed for \'' + this.username + '\'');
-            return callback(new Error(error), null);
-        } 
-        else 
-        if (response.statusCode !== 200) {
-            var error = new Error('Bad status code');
-            return callback(new Error(error), null);
-        }
-
-        stream.pipe(feedparser);
-    });
-    
-    feedparser.on('error', function(error) {
-        callback(new Error(error), null);
-    });
-    
-    feedparser.on('readable', function() {
+    opts.parser.on('readable', function() {
         var stream = this;
         var item;
 
@@ -68,7 +53,7 @@ GitHubFeed.prototype.fetch = function(callback) {
         }
     });
     
-    feedparser.on('end', function() {
+    opts.parser.on('end', function() {
         callback(null, output);
     });
 };
@@ -76,38 +61,22 @@ GitHubFeed.prototype.fetch = function(callback) {
 GitHubFeed.prototype.stream = function() {
     
     var self = this;
-    var opts = this.config || {};
-    var feedparser = new FeedParser();
+    var opts = objectAssign(
+    {
+        username: this.username,
+        parser: new FeedParser(),
+        isAsyc: false
+    }, this.options || {});
     
-    this.caller = {func: 'stream', parser: feedparser};
-    var req = request('https://github.com/' + this.username + ".atom");
+    var req = request('https://github.com/' + opts.username + ".atom");
     
-    req.on('error', function (error) {
+    this._req(req, opts);
+    
+    opts.parser.on('error', function(error) {
         self.emit('error', new Error(error));
     });
     
-    req.on('response', function (response) {
-        var stream = this;
-
-        if (response.statusCode === 404) 
-        {
-            var err = new Error('Unable to find feed for \'' + this.username + '\'');
-            return self.emit('error', new Error(err));
-        } 
-        else 
-        if (response.statusCode !== 200) {
-            var err = new Error('Bad status code');
-            return self.emit('error', new Error(err));
-        }
-
-        stream.pipe(feedparser);
-    });
-    
-    feedparser.on('error', function(error) {
-        self.emit('error', new Error(error));
-    });
-    
-    feedparser.on('readable', function() {
+    opts.parser.on('readable', function() {
         var stream = this;
         var item;
 
@@ -130,9 +99,33 @@ GitHubFeed.prototype.stream = function() {
         }
     });
     
-    feedparser.on('end', function() {
+    opts.parser.on('end', function() {
         self.emit('end');
     });
+}
+
+GitHubFeed.prototype._req = function(req, opts) {
+    var self = this;
+    req.on('error', function (error) {
+        self.emit('error', new Error(error));
+    });
+    
+    req.on('response', function (response) {
+        var stream = this;
+
+        if (response.statusCode === 404) 
+        {
+            var error = new Error('Unable to find feed for \'' + opts.username + '\'');
+            return (opts.isAsyc) ? opts.callback(error, null) : self.emit('error', error);
+        } 
+        else 
+        if (response.statusCode !== 200) {
+            var error = new Error('Bad status code');
+            return (opts.isAsyc) ? opts.callback(error, null) : self.emit('error', error);
+        }
+
+        stream.pipe(opts.parser);
+    });   
 }
 
 module.exports = GitHubFeed;
