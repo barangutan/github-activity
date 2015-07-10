@@ -1,12 +1,23 @@
 var feed = require("./index");
 var cheerio = require('cheerio');
 
-var gullyFeed = new feed("gullyfoyle", {types: ['watch'] });
- 
+/*
+feed.fetch('gullyfoyle', {types:['fork']}, function(err, data) {
+    if(err)
+        console.log(err);
+    
+    if(data)
+        console.log(data);
+});
+*/
 
-gullyFeed.on("data", function(data) {
+feed.stream('gullyfoyle', {types:['fork']});
+
+
+feed.on("data", function(data) {
     //var $ = cheerio.load(data.description);
     //var icon = $('div.title');
     //console.log(icon.html());
-    console.log(data);
+    console.log(data.title);
 });
+
