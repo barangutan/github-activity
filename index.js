@@ -20,7 +20,7 @@ GitHubFeed.prototype.fetch = function(callback) {
         username: this.username,
         parser: new FeedParser(),
         callback: callback,
-        isAsyc: true
+        isAsync: true
     }, this.options || {});
     var req = request('https://github.com/' + opts.username + ".atom");
     
@@ -65,7 +65,7 @@ GitHubFeed.prototype.stream = function() {
     {
         username: this.username,
         parser: new FeedParser(),
-        isAsyc: false
+        isAsync: false
     }, this.options || {});
     
     var req = request('https://github.com/' + opts.username + ".atom");
@@ -116,12 +116,12 @@ GitHubFeed.prototype._req = function(req, opts) {
         if (response.statusCode === 404) 
         {
             var error = new Error('Unable to find feed for \'' + opts.username + '\'');
-            return (opts.isAsyc) ? opts.callback(error, null) : self.emit('error', error);
+            return (opts.isAsync) ? opts.callback(error, null) : self.emit('error', error);
         } 
         else 
         if (response.statusCode !== 200) {
             var error = new Error('Bad status code');
-            return (opts.isAsyc) ? opts.callback(error, null) : self.emit('error', error);
+            return (opts.isAsync) ? opts.callback(error, null) : self.emit('error', error);
         }
 
         stream.pipe(opts.parser);
