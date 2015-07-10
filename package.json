@@ -1,0 +1,34 @@
+{
+  "name": "github-feed",
+  "version": "1.0.0",
+  "description": "Convert a GitHub activity atom feed into neat JSON",
+  "main": "index.js",
+  "dependencies": {
+    "cheerio": "^0.19.0",
+    "feedparser": "^1.1.3",
+    "request": "^2.58.0",
+    "object-assign": "^3.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gullyfoyle/github-feed.git"
+  },
+  "keywords": [
+    "github",
+    "activity",
+    "atom",
+    "feed",
+    "parser",
+    "json"
+  ],
+  "author": "Barry Gallagher",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gullyfoyle/github-feed/issues"
+  },
+  "homepage": "https://github.com/gullyfoyle/github-feed#readme"
+}
