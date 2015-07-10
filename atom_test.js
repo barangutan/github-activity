@@ -18,7 +18,7 @@ var count = 0;
 gully.stream();
 
 gully.on('item', function(item) {
-    console.log(item);
+    console.log('%s - %s', item.type, item.link);
 });
 
 gully.on('error', function(error) {

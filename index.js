@@ -7,21 +7,19 @@ var objectAssign = require('object-assign');
 function GitHubFeed(username, config) {
     
     EventEmitter.call(this);
-    this.username = username;
-    this.config = config || {};
+    this.config = objectAssign(
+    {
+        username: username,
+        parser: new FeedParser()
+    }, config || {});
+    this.parser = new FeedParser();
 }
 util.inherits(GitHubFeed, EventEmitter);
 
 GitHubFeed.prototype.fetch = function(callback) {
     var output = [];
     
-    var opts = objectAssign(
-    {
-        username: this.username,
-        parser: new FeedParser(),
-        callback: callback,
-        isAsync: true
-    }, this.config);
+    var opts = objectAssign({callback: callback, isAsync: true}, this.config);
     var req = request('https://github.com/' + opts.username + ".atom");
 
     this._req(req, opts);
@@ -63,12 +61,7 @@ GitHubFeed.prototype.fetch = function(callback) {
 GitHubFeed.prototype.stream = function() {
     
     var self = this;
-    var opts = objectAssign(
-    {
-        username: this.username,
-        parser: new FeedParser(),
-        isAsync: false
-    }, this.config);
+    var opts = objectAssign({isAsync: false}, this.config);
     
     var req = request('https://github.com/' + opts.username + ".atom");
     
