@@ -1,8 +1,10 @@
 var feed = require("./index");
-//var cheerio = require('cheerio');
 
-var gully = new feed('gullyfoyle', {types: ['watch']});
+// pull_request, issues, issue_comment, push,
 
+var gully = new feed('gullyfoyle');
+
+/*
 gully.fetch(function(err, data) {
     if(err)
         console.log(err);
@@ -10,15 +12,15 @@ gully.fetch(function(err, data) {
     if(data)
         console.log(data);
 });
+*/
 
-/*
+var count = 0;
 gully.stream();
 
 gully.on('item', function(item) {
-    console.log(item.title);
+    console.log(item);
 });
 
 gully.on('error', function(error) {
     console.log(error);
 });
-*/

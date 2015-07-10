@@ -8,7 +8,7 @@ function GitHubFeed(username, config) {
     
     EventEmitter.call(this);
     this.username = username;
-    this.config = config;
+    this.config = config || {};
 }
 util.inherits(GitHubFeed, EventEmitter);
 
@@ -21,9 +21,9 @@ GitHubFeed.prototype.fetch = function(callback) {
         parser: new FeedParser(),
         callback: callback,
         isAsync: true
-    }, this.options || {});
+    }, this.config);
     var req = request('https://github.com/' + opts.username + ".atom");
-    
+
     this._req(req, opts);
     
     opts.parser.on('error', function(error) {
@@ -39,9 +39,11 @@ GitHubFeed.prototype.fetch = function(callback) {
             var icon = item.description.match(/<span class=(.*?)span>/)[0];    
             
             var local = {
+                guid: item.guid,
                 title: item.title,
                 type: type,
-                icon: icon
+                icon: icon,
+                link: item.link
             };
             
             if(opts.types && opts.types.length > 0) {
@@ -66,7 +68,7 @@ GitHubFeed.prototype.stream = function() {
         username: this.username,
         parser: new FeedParser(),
         isAsync: false
-    }, this.options || {});
+    }, this.config);
     
     var req = request('https://github.com/' + opts.username + ".atom");
     
@@ -85,11 +87,13 @@ GitHubFeed.prototype.stream = function() {
             var icon = item.description.match(/<span class=(.*?)span>/)[0];    
             
             var local = {
+                guid: item.guid.split(':').slice(1)[1],
                 title: item.title,
                 type: type,
-                icon: icon
+                icon: icon,
+                link: item.link
             };
-            
+                 
             if(opts.types && opts.types.length > 0) {
                 if(opts.types.indexOf(local.type) > -1)
                     self.emit('item', local);
