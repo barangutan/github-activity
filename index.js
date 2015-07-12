@@ -77,7 +77,10 @@ GitHubFeed.prototype.stream = function() {
 
         while (item = stream.read()) {
             var type = item.description.match(/<!-- (.*?) -->/)[1];
-            var icon = item.description.match(/<span class=(.*?)span>/)[0];    
+            var icon = item.description.match(/<span class=(.*?)span>/)[0];
+            
+            if(opts.ignoreMega)
+                icon = icon.replace('mega-', '');
             
             var local = {
                 guid: item.guid.split(':').slice(1)[1],

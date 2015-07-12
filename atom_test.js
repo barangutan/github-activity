@@ -2,7 +2,7 @@ var feed = require("./index");
 
 // pull_request, issues, issue_comment, push,
 
-var gully = new feed('gullyfoyle');
+var gully = new feed('gullyfoyle', {ignoreMega: true});
 
 /*
 gully.fetch(function(err, data) {
@@ -18,7 +18,7 @@ var count = 0;
 gully.stream();
 
 gully.on('item', function(item) {
-    console.log('%s - %s', item.type, item.link);
+    console.log(item.icon);
 });
 
 gully.on('error', function(error) {
