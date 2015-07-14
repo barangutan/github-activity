@@ -77,8 +77,9 @@ GitHubActivity.prototype._end = function() {
     if (opts.isAsync) {
         opts.callback(null, this.output);
     } else {
-        self.emit('end');
+        self.emit('end', this.output.length);
     }
+    this.output = [];
 }
 
 GitHubActivity.prototype._handleItem = function(item) {
@@ -117,9 +118,8 @@ GitHubActivity.prototype._handleItem = function(item) {
 
 GitHubActivity.prototype._sendItem = function(item) {
     var self = this, opts = this.config;
-    if (opts.isAsync)
-        this.output.push(item);
-    else
+    this.output.push(item);
+    if (!opts.isAsync)
         self.emit('item', item);
 }
 

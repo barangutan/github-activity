@@ -1,6 +1,6 @@
 # github-activity
 
-Retrieves a users GitHub activity (from their Atom feed) and parses it into some useful json. GitHub has capped the feed to return the most recent 30 events.
+Retrieves a users GitHub activity (from their Atom feed) and parses it into a useful js object/json. GitHub has capped the feed to return the most recent 30 events.
 
 ## Installation ##
 
@@ -16,7 +16,7 @@ A simple example using the asynchronous `fetch(username)` method:
 ```javascript
 var activity = require('github-activity');
 
-activity.fetch('gullyfoyle', function(err, feed) {
+activity.fetch('barangutan', function(err, feed) {
     if(err) console.log(err);
     
     if(feed) {
@@ -24,8 +24,8 @@ activity.fetch('gullyfoyle', function(err, feed) {
         // Returned 30 feed items
         
         feed.forEach(function(item) {
-            console.log('> %s (%s)', item.action, item.date);
-            // > gullyfoyle starred chalk/chalk (15 hours ago)
+            console.log('%s (%s)', item.action, item.date);
+            // barangutan starred chalk/chalk (15 hours ago)
         });
     }
 });
@@ -36,25 +36,44 @@ Another example, this time using `stream(username)` method which emits custom ev
 ```javascript
 var activity = require('github-activity');
 
-activity.stream('gullyfoyle');
+activity.stream('barangutan');
 
 activity.on('item', function(item) {
-    console.log('> %s (%s)', item.action, item.date);
-    // > gullyfoyle starred chalk/chalk (15 hours ago)
+    console.log('%s (%s)', item.action, item.date);
+    // barangutan starred chalk/chalk (15 hours ago)
 });
 
 activity.on('error', function(err) {
     console.log(error);
 });
 
-activity.on('end', function() {
-    //console.log('Fin!');
+activity.on('end', function(count) {
+    console.log('\nReturned %d feed items', count);
+    // Returned 30 feed items
 });
+```
+
+### Results ###
+
+`fetch()` returns an array of feed objects ('items') while `stream()` will obviously return one item at a time. The properties should be self-explanatory.
+
+```javascript
+[
+    {
+        "guid": "PushEvent/2972967863",
+        "action": "barangutan pushed to master at barangutan/github-activity",
+        "event": "push",
+        "icon": "<span class='mega-octicon octicon-git-commit'></span>",
+        "href": "https://github.com/barangutan/github-activity/compare/e178f00e59...8bd8b9b6ea",
+        "date": "2 hours ago"
+    },
+    { ... }
+]
 ```
 
 ### Config ###
 
-Here are a few config options you can pass into the `fetch(username, config)` and `stream(username, config)` methods as a second argument:
+There are a handful of config options you can pass into the `fetch(username, config)` and `stream(username, config)` methods as a second argument:
 
 ```javascript
 {
@@ -75,7 +94,7 @@ So we're only interested in pull requests, disabling mega-icons and formatting t
 ```javascript
 var activity = require('github-activity');
 
-activity.stream('gullyfoyle', {
+activity.stream('barangutan', {
     events: ['pull_request'],
     megaIcons: false,
     dateFormat: 'dddd, Do of MMMM YYYY'
@@ -83,7 +102,7 @@ activity.stream('gullyfoyle', {
 
 activity.on('item', function(item) {
     console.log('%s on %s', item.action, item.date);
-    // gullyfoyle opened pull request Marak/faker.js#236 on Thursday, 9th of July 2015
+    // barangutan opened pull request Marak/faker.js#236 on Thursday, 9th of July 2015
     console.log('Icon: %s', item.icon);
     // Icon: <span class="octicon octicon-git-pull-request"></span>
 });
