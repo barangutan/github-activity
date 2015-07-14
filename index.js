@@ -5,29 +5,34 @@ var util = require("util");
 var objectAssign = require('object-assign');
 var moment = require('moment');
 
-function GitHubActivity(username, config) {
-    
+function GitHubActivity() {
     EventEmitter.call(this);
-    this.config = objectAssign(
-    {
-        username: username,
+    this.config = {
         parser: new FeedParser()
-    }, config || {});
+    };
     this.output = [];
 }
 util.inherits(GitHubActivity, EventEmitter);
 
-GitHubActivity.prototype.fetch = function(callback) {
-    this.config = objectAssign({callback: callback, isAsync: true}, this.config);
-    var req = request('https://github.com/' + this.config.username + ".atom");
+GitHubActivity.prototype.fetch = function(username, config, cb) {
+    if(typeof username !== 'string')
+        throw new Error('Unspecified username');
     
+    var callback = (typeof cb === 'undefined') ? config : cb;
+    this.config = objectAssign({username: username, callback: callback, isAsync: true}, config);
+    
+    var req = request('https://github.com/' + username + ".atom");
     this._run(req);
 };
 
-GitHubActivity.prototype.stream = function() {
-    this.config = objectAssign({isAsync: false}, this.config);
-    var req = request('https://github.com/' + this.config.username + ".atom");
+GitHubActivity.prototype.stream = function(username, config) {
+    if(typeof username !== 'string')
+        throw new Error('Unspecified username');
     
+    this.config = objectAssign({username: username, isAsync: false}, config);
+    this.removeAllListeners('error');
+    
+    var req = request('https://github.com/' + username + ".atom");
     this._run(req);
 }
 
@@ -69,10 +74,11 @@ GitHubActivity.prototype._run = function(req) {
 
 GitHubActivity.prototype._end = function() {
     var self = this, opts = this.config;
-    if (opts.isAsync)
+    if (opts.isAsync) {
         opts.callback(null, this.output);
-    else
+    } else {
         self.emit('end');
+    }
 }
 
 GitHubActivity.prototype._handleItem = function(item) {
@@ -103,6 +109,9 @@ GitHubActivity.prototype._handleItem = function(item) {
             self._sendItem(local);
     } else {
         self._sendItem(local);
+        self.removeListener('error', function(error) {
+            self._handleError(error);
+        });
     }
 }
 
@@ -132,4 +141,4 @@ GitHubActivity.prototype._handleError = function(error, code) {
         return self.emit('error', error);
 }
 
-module.exports = GitHubActivity;
+module.exports = new GitHubActivity();

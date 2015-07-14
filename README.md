@@ -6,18 +6,17 @@ Retrieves a users GitHub activity (from their Atom feed) and parses it into some
 
 Use NPM to install:
 
-    npm install github-activity
-    npm test
+    $ npm install --save github-activity
+    $ npm test
     
 ## Usage ##
 
 A simple example using the asynchronous `fetch()` method:
 
 ```javascript
-var feed = require('github-activity');
-var gully = new feed('gullyfoyle'); // pass in GitHub username here
+var activity = require('github-activity');
 
-gully.fetch(function(err, feed) {
+activity.fetch('gullyfoyle', function(err, feed) {
     if(err) console.log(err);
     
     if(feed) {
@@ -33,7 +32,9 @@ gully.fetch(function(err, feed) {
 Another example, this time using `stream()` method which emits custom events:
 
 ```javascript
-gully.stream();
+var activity = require('github-activity');
+
+activity.stream('gullyfoyle');
 
 gully.on('item', function(item) {
     console.log('%s (%s)', item.title, item.date);
