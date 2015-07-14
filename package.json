@@ -1,18 +1,20 @@
 {
-  "name": "github-feed",
+  "name": "github-activity",
   "version": "1.0.0",
-  "description": "Convert a GitHub activity atom feed into neat JSON",
+  "description": "Retrieve a users GitHub activity feed in neat JSON",
   "main": "index.js",
   "dependencies": {
-    "cheerio": "^0.19.0",
     "feedparser": "^1.1.3",
+    "moment": "^2.10.3",
     "object-assign": "^3.0.0",
-    "request": "^2.58.0",
-    "sha1": "^1.1.1"
+    "request": "^2.58.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "mocha": "^2.2.5"
+  },
   "scripts": {
-    "test": "mocha"
+    "test": "node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",

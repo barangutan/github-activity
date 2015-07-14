@@ -3,8 +3,9 @@ var FeedParser = require('feedparser')
 var request = require('request');
 var util = require("util");
 var objectAssign = require('object-assign');
+var moment = require('moment');
 
-function GitHubFeed(username, config) {
+function GitHubActivity(username, config) {
     
     EventEmitter.call(this);
     this.config = objectAssign(
@@ -14,23 +15,23 @@ function GitHubFeed(username, config) {
     }, config || {});
     this.output = [];
 }
-util.inherits(GitHubFeed, EventEmitter);
+util.inherits(GitHubActivity, EventEmitter);
 
-GitHubFeed.prototype.fetch = function(callback) {
+GitHubActivity.prototype.fetch = function(callback) {
     this.config = objectAssign({callback: callback, isAsync: true}, this.config);
     var req = request('https://github.com/' + this.config.username + ".atom");
     
     this._run(req);
 };
 
-GitHubFeed.prototype.stream = function() {
+GitHubActivity.prototype.stream = function() {
     this.config = objectAssign({isAsync: false}, this.config);
     var req = request('https://github.com/' + this.config.username + ".atom");
     
     this._run(req);
 }
 
-GitHubFeed.prototype._run = function(req) {
+GitHubActivity.prototype._run = function(req) {
     var self = this;
     var parser = new FeedParser();
     var opts = self.config;
@@ -66,7 +67,7 @@ GitHubFeed.prototype._run = function(req) {
     });
 }
 
-GitHubFeed.prototype._end = function() {
+GitHubActivity.prototype._end = function() {
     var self = this, opts = this.config;
     if (opts.isAsync)
         opts.callback(null, this.output);
@@ -74,22 +75,27 @@ GitHubFeed.prototype._end = function() {
         self.emit('end');
 }
 
-GitHubFeed.prototype._handleItem = function(item) {
+GitHubActivity.prototype._handleItem = function(item) {
     
     var self = this, opts = this.config;
     
     var type = item.description.match(/<!-- (.*?) -->/)[1];
     var icon = item.description.match(/<span class=(.*?)span>/)[0];
-            
-    if(opts.ignoreMega && opts.ignoreMega === true)
+    var date = moment(item.date).fromNow();
+    
+    if(opts.megaIcons === false)
         icon = icon.replace('mega-', '');
+    
+    if(opts.dateFormat) 
+        date = moment(item.date).format(opts.dateFormat);
             
     var local = {
         guid: item.guid.split(':').slice(1)[1],
         title: item.title,
         type: type,
         icon: icon,
-        href: item.link
+        href: item.link,
+        date: date
     };
                  
     if(opts.types && opts.types.length > 0) {
@@ -100,7 +106,7 @@ GitHubFeed.prototype._handleItem = function(item) {
     }
 }
 
-GitHubFeed.prototype._sendItem = function(item) {
+GitHubActivity.prototype._sendItem = function(item) {
     var self = this, opts = this.config;
     if (opts.isAsync)
         this.output.push(item);
@@ -108,7 +114,7 @@ GitHubFeed.prototype._sendItem = function(item) {
         self.emit('item', item);
 }
 
-GitHubFeed.prototype._handleError = function(error, code) {
+GitHubActivity.prototype._handleError = function(error, code) {
     var self = this, opts = this.config, err;
     
     if (code && code === 404) 
@@ -126,4 +132,4 @@ GitHubFeed.prototype._handleError = function(error, code) {
         return self.emit('error', error);
 }
 
-module.exports = GitHubFeed;
+module.exports = GitHubActivity;
