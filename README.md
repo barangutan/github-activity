@@ -21,9 +21,11 @@ activity.fetch('gullyfoyle', function(err, feed) {
     
     if(feed) {
         console.log('Returned %d feed items\n', feed.length);
+        // Returned 30 feed items
         
         feed.forEach(function(item) {
-            console.log('%s (%s)', item.title, item.date);    
+            console.log('> %s (%s)', item.title, item.date);
+            // > gullyfoyle starred chalk/chalk (15 hours ago)
         });
     }
 });
@@ -37,8 +39,8 @@ var activity = require('github-activity');
 activity.stream('gullyfoyle');
 
 gully.on('item', function(item) {
-    console.log('%s (%s)', item.title, item.date);
-    // gullyfoyle starred gullyfoyle/github-activity (15 hours ago)
+    console.log('> %s (%s)', item.title, item.date);
+    // > gullyfoyle starred chalk/chalk (15 hours ago)
 });
 
 gully.on('error', function(err) {
