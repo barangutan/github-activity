@@ -13,7 +13,7 @@ describe('GitHubActivity ~', function() {
         
         it('should return data for a valid user', function(done) {
             
-            activity.fetch('gullyfoyle', function(err, data) {
+            activity.fetch('barangutan', function(err, data) {
 
                 expect(err).to.be.null;
                 expect(data).to.exist;
@@ -25,7 +25,7 @@ describe('GitHubActivity ~', function() {
         
         it('should return an error for an invalid user', function(done) {
             
-            activity.fetch('gully666foyle', function(err, data) {
+            activity.fetch('barangutan666', function(err, data) {
 
                 expect(err).to.exist;
                 expect(data).to.be.null;
@@ -48,7 +48,7 @@ describe('GitHubActivity ~', function() {
         it('should return data for a valid user', function(done) {
 
             var count = 0;
-            activity.stream('gullyfoyle');
+            activity.stream('barangutan');
             activity.on('item', function(item) {
                 expect(item).to.exist;
                 ++count;
@@ -66,7 +66,7 @@ describe('GitHubActivity ~', function() {
         });
         
         it('should return an error for an invalid user', function(done) {
-            activity.stream('gully666foyle');
+            activity.stream('barangutan666');
             
             activity.on('error', function(error) {
                 expect(error).to.exist;
