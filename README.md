@@ -82,7 +82,7 @@ activity.stream('gullyfoyle', {
 });
 
 activity.on('item', function(item) {
-    console.log('%s on %s', item.event, item.action, item.date);
+    console.log('%s on %s', item.action, item.date);
     // gullyfoyle opened pull request Marak/faker.js#236 on Thursday, 9th of July 2015
     console.log('Icon: %s', item.icon);
     // Icon: <span class="octicon octicon-git-pull-request"></span>
