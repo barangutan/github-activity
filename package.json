@@ -1,6 +1,6 @@
 {
   "name": "github-activity",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Retrieve a users GitHub activity feed in neat JSON",
   "main": "index.js",
   "dependencies": {
