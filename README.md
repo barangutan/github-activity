@@ -68,7 +68,7 @@ activity.on('end', function(count) {
 }
 ```
 
-### Config ###
+## Config ##
 
 There are a handful of config options you can pass into the `fetch(username, config)` and `stream(username, config)` methods as a second argument:
 
