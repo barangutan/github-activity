@@ -2,14 +2,15 @@ var feed = require("./index");
 
 // pull_request, issues, issue_comment, push,
 
-feed.fetch('gullyfoyle', {types: ['push']}, function(err, feed) {
+feed.fetch('gullyfoyle', {types: ['push'], dateFormat: 'dddd, Do of MMMM YYYY'}, function(err, feed) {
     if(err)
         console.log(err);
     
     if(feed) {
         console.log('Returned %d feed items\n', feed.length);
         feed.forEach(function(item) {
-            console.log('%s (%s)', item.event, item.date);    
+            console.log('%s on %s', item.action, item.date);
+            // gullyfoyle opened pull request Marak/faker.js#236 on Thursday, 9th of July 2015
         });
     }
 });

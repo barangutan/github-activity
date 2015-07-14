@@ -1,17 +1,17 @@
 # github-activity
 
-Retrieves a users GitHub activity (from their Atom feed) and parses it into some useful json. GitHub has capped the feed to only bring back the last 30 events.
+Retrieves a users GitHub activity (from their Atom feed) and parses it into some useful json. GitHub has capped the feed to return the most recent 30 events.
 
 ## Installation ##
 
-Use NPM to install:
+Use [npm](https://www.npmjs.com/) to install:
 
     $ npm install --save github-activity
     $ npm test
     
 ## Usage ##
 
-A simple example using the asynchronous `fetch()` method:
+A simple example using the asynchronous `fetch(username)` method:
 
 ```javascript
 var activity = require('github-activity');
@@ -31,7 +31,7 @@ activity.fetch('gullyfoyle', function(err, feed) {
 });
 ```
 
-Another example, this time using `stream()` method which emits custom events:
+Another example, this time using `stream(username)` method which emits custom events:
 
 ```javascript
 var activity = require('github-activity');
@@ -64,5 +64,25 @@ Here are a few config options you can pass into the `fetch()` and `stream()` met
 }
 ```
 
-* `events: []` - an array of valid 'event' types you want returned. Valid types are listed in the example above. Please note that a watch event is triggered when you Star a repo, and not when you 'Watch' it (GitHub doesn't differenciate between the two for its activity feed).
-* `megaIcons: bool` - by default, GitHub adds the `mega-octicon` class to events such as issue comments, pushes and pull requests in order to highlight their importance (this class makes the icon 32px instead of the standard 16px). If you would rather return a uniform size for _all_ your items, set this `megaIcons` flag to false.
+* `events: []` - an array of valid 'event' types you want returned. Valid types are listed in the example above. Please note that a watch event is triggered when you Star a repo, and not when you 'Watch' it. GitHub doesn't differenciate between the two for its activity feed.
+* `megaIcons: bool` - by default, GitHub adds the `mega-octicon` class to icons for events such as issue comments, pushes and pull requests in order to highlight their importance (this class makes the icon 32px instead of the standard 16px). If you would rather return a uniform size for _all_ your items, set this `megaIcons` flag to false.
+* `dateFormat: string` - the default date returned is using the moment().fromNow() method (2 hours ago, yesterday etc). You can pass a date format string here to override.
+
+*Example:*
+
+So we're only interested in pull requests, disabling megaIcons and formatting the date to 'Day, nth of month year':
+
+```javascript
+var activity = require('github-activity');
+
+activity.stream('gullyfoyle' {
+    events: ['pull_request'],
+    megaIcons: false,
+    dateFormat: 'dddd, Do of MMMM YYYY'
+});
+
+gully.on('item', function(item) {
+    console.log('%s on %s', item.action, item.date);
+    // gullyfoyle opened pull request Marak/faker.js#236 on Thursday, 9th of July 2015
+});
+```
