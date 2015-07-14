@@ -1,6 +1,6 @@
 # github-activity
 
-Retrieves a users GitHub activity (from their Atom feed) and parses it into some useful json. 
+Retrieves a users GitHub activity (from their Atom feed) and parses it into some useful json. GitHub has capped the feed to only bring back the last 30 events.
 
 ## Installation ##
 
@@ -52,7 +52,9 @@ gully.on('end', function() {
 });
 ```
 
-There are a few config options you can pass into the github-activity object:
+### Config ###
+
+Here are a few config options you can pass into the `fetch()` and `stream()` methods as a second argument:
 
 ```javascript
 {
@@ -62,3 +64,4 @@ There are a few config options you can pass into the github-activity object:
 }
 ```
 
+* `types` - an array of valid 'event' types you want returned. 
