@@ -1,8 +1,8 @@
-var feed = require("./index");
+var activity = require("./index");
 
 // pull_request, issues, issue_comment, push,
-
-feed.fetch('gullyfoyle', {types: ['push'], dateFormat: 'dddd, Do of MMMM YYYY'}, function(err, feed) {
+/*
+activity.fetch('gullyfoyle', {types: ['push'], dateFormat: 'dddd, Do of MMMM YYYY'}, function(err, feed) {
     if(err)
         console.log(err);
     
@@ -14,19 +14,16 @@ feed.fetch('gullyfoyle', {types: ['push'], dateFormat: 'dddd, Do of MMMM YYYY'},
         });
     }
 });
-
-/*
-feed.stream('gullyfoyle', {dateFormat: 'MMMM Do YYYY', megaIcons: false});
-
-feed.on('item', function(item) {
-    console.log('%s (%s)', item.title, item.date);  
-});
-
-feed.on('error', function(error) {
-    console.log(error);
-});
-
-feed.on('end', function() {
-    console.log('Fin!');
-});
 */
+activity.stream('gullyfoyle', {
+    events: ['pull_request'],
+    megaIcons: false,
+    dateFormat: 'dddd, Do of MMMM YYYY'
+});
+
+activity.on('item', function(item) {
+    console.log('%s on %s', item.event, item.action, item.date);
+    // gullyfoyle opened pull request Marak/faker.js#236 on Thursday, 9th of July 2015
+    console.log('Icon: %s', item.icon);
+    // Icon: <span class="octicon octicon-git-pull-request"></span>
+});

@@ -105,7 +105,7 @@ GitHubActivity.prototype._handleItem = function(item) {
     };
                  
     if(opts.events && opts.events.length > 0) {
-        if(opts.events.indexOf(local.type) > -1)
+        if(opts.events.indexOf(local.event) > -1)
             self._sendItem(local);
     } else {
         self._sendItem(local);

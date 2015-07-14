@@ -38,23 +38,23 @@ var activity = require('github-activity');
 
 activity.stream('gullyfoyle');
 
-gully.on('item', function(item) {
+activity.on('item', function(item) {
     console.log('> %s (%s)', item.action, item.date);
     // > gullyfoyle starred chalk/chalk (15 hours ago)
 });
 
-gully.on('error', function(err) {
+activity.on('error', function(err) {
     console.log(error);
 });
 
-gully.on('end', function() {
+activity.on('end', function() {
     //console.log('Fin!');
 });
 ```
 
 ### Config ###
 
-Here are a few config options you can pass into the `fetch()` and `stream()` methods as a second argument:
+Here are a few config options you can pass into the `fetch(username, config)` and `stream(username, config)` methods as a second argument:
 
 ```javascript
 {
@@ -68,21 +68,23 @@ Here are a few config options you can pass into the `fetch()` and `stream()` met
 * `megaIcons: bool` - by default, GitHub adds the `mega-octicon` class to icons for events such as issue comments, pushes and pull requests in order to highlight their importance (this class makes the icon 32px instead of the standard 16px). If you would rather return a uniform size for _all_ your items, set this `megaIcons` flag to false.
 * `dateFormat: string` - the default date returned is using the moment().fromNow() method (2 hours ago, yesterday etc). You can pass a date format string here to override.
 
-*Example:*
+**Example:**
 
 So we're only interested in pull requests, disabling megaIcons and formatting the date to 'Day, nth of month year':
 
 ```javascript
 var activity = require('github-activity');
 
-activity.stream('gullyfoyle' {
+activity.stream('gullyfoyle', {
     events: ['pull_request'],
     megaIcons: false,
     dateFormat: 'dddd, Do of MMMM YYYY'
 });
 
-gully.on('item', function(item) {
-    console.log('%s on %s', item.action, item.date);
+activity.on('item', function(item) {
+    console.log('%s on %s', item.event, item.action, item.date);
     // gullyfoyle opened pull request Marak/faker.js#236 on Thursday, 9th of July 2015
+    console.log('Icon: %s', item.icon);
+    // Icon: <span class="octicon octicon-git-pull-request"></span>
 });
 ```
