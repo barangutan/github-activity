@@ -70,7 +70,7 @@ Here are a few config options you can pass into the `fetch(username, config)` an
 
 **Example:**
 
-So we're only interested in pull requests, disabling megaIcons and formatting the date to 'Day, nth of month year':
+So we're only interested in pull requests, disabling mega-icons and formatting the date to 'Day, nth of month year':
 
 ```javascript
 var activity = require('github-activity');
