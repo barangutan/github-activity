@@ -55,20 +55,17 @@ activity.on('end', function(count) {
 
 ### Results ###
 
-`fetch()` returns an array of feed objects ('items') while `stream()` will obviously return one item at a time. The properties should be self-explanatory.
+`fetch()` returns an array of feed objects ('items') while `stream()` will obviously return one item at a time. The properties of said item should be self-explanatory.
 
 ```javascript
-[
-    {
-        "guid": "PushEvent/2972967863",
-        "action": "barangutan pushed to master at barangutan/github-activity",
-        "event": "push",
-        "icon": "<span class='mega-octicon octicon-git-commit'></span>",
-        "href": "https://github.com/barangutan/github-activity/compare/e178f00e59...8bd8b9b6ea",
-        "date": "2 hours ago"
-    },
-    { ... }
-]
+{
+    "guid": "PushEvent/2972967863",
+    "action": "barangutan pushed to master at barangutan/github-activity",
+    "event": "push",
+    "icon": "<span class='mega-octicon octicon-git-commit'></span>",
+    "href": "https://github.com/barangutan/github-activity/compare/e178f00e59...8bd8b9b6ea",
+    "date": "2 hours ago"
+}
 ```
 
 ### Config ###
