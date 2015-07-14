@@ -24,7 +24,7 @@ activity.fetch('gullyfoyle', function(err, feed) {
         // Returned 30 feed items
         
         feed.forEach(function(item) {
-            console.log('> %s (%s)', item.title, item.date);
+            console.log('> %s (%s)', item.action, item.date);
             // > gullyfoyle starred chalk/chalk (15 hours ago)
         });
     }
@@ -39,7 +39,7 @@ var activity = require('github-activity');
 activity.stream('gullyfoyle');
 
 gully.on('item', function(item) {
-    console.log('> %s (%s)', item.title, item.date);
+    console.log('> %s (%s)', item.action, item.date);
     // > gullyfoyle starred chalk/chalk (15 hours ago)
 });
 
@@ -58,10 +58,11 @@ Here are a few config options you can pass into the `fetch()` and `stream()` met
 
 ```javascript
 {
-    types: ['issues', 'pull_request', 'push', 'issue_comments', 'watch'],
+    events: ['issues', 'pull_request', 'push', 'issue_comments', 'watch'],
     megaIcons: true|false,
     dateFormat: 'MMMM Do YYYY'
 }
 ```
 
-* `types` - an array of valid 'event' types you want returned. 
+* `events: []` - an array of valid 'event' types you want returned. Valid types are listed in the example above. Please note that a watch event is triggered when you Star a repo, and not when you 'Watch' it (GitHub doesn't differenciate between the two for its activity feed).
+* `megaIcons: bool` - by default, GitHub adds the `mega-octicon` class to events such as issue comments, pushes and pull requests in order to highlight their importance (this class makes the icon 32px instead of the standard 16px). If you would rather return a uniform size for _all_ your items, set this `megaIcons` flag to false.

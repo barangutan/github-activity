@@ -9,7 +9,7 @@ feed.fetch('gullyfoyle', {types: ['push']}, function(err, feed) {
     if(feed) {
         console.log('Returned %d feed items\n', feed.length);
         feed.forEach(function(item) {
-            console.log('%s (%s)', item.title, item.date);    
+            console.log('%s (%s)', item.event, item.date);    
         });
     }
 });

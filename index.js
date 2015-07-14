@@ -97,15 +97,15 @@ GitHubActivity.prototype._handleItem = function(item) {
             
     var local = {
         guid: item.guid.split(':').slice(1)[1],
-        title: item.title,
-        type: type,
+        action: item.title,
+        event: type,
         icon: icon,
         href: item.link,
         date: date
     };
                  
-    if(opts.types && opts.types.length > 0) {
-        if(opts.types.indexOf(local.type) > -1)
+    if(opts.events && opts.events.length > 0) {
+        if(opts.events.indexOf(local.type) > -1)
             self._sendItem(local);
     } else {
         self._sendItem(local);
